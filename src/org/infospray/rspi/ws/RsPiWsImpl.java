@@ -24,7 +24,7 @@ public class RsPiWsImpl implements RsPiWs {
 	}
 
 	@Override
-	public boolean tounerGauche(long angle) {
+	public boolean tournerGauche(long angle) {
 		logger.info("TOURNER_GAUCHE : D = "  + String.valueOf(angle));
 		return false;
 	}

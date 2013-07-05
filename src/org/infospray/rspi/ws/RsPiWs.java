@@ -13,7 +13,7 @@ public interface RsPiWs {
 	
 	public boolean	stop();
 	
-	public boolean	tounerGauche(long angle);
+	public boolean	tournerGauche(long angle);
 	
 	public boolean	tournerDroite(long angle);
 	
