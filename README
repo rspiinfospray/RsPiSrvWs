@@ -1,0 +1,2 @@
+Serveur de webservice. Execute des instructions sur les pins GPIO.
+Ici on veut faire tourner un moteur dans un sens puis dans l'autre.
