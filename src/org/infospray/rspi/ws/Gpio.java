@@ -6,6 +6,8 @@ import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.wiringpi.SoftPwm;
 
 public class Gpio {
 
@@ -16,24 +18,37 @@ public class Gpio {
 	
 	
 	static Logger logger = Logger.getLogger(Gpio.class);
+	
+	private static int DEFAULT_PUISSANCE = 50;
 
-	public static boolean executeAvancer(GpioController gpio, GpioPinDigitalOutput pin1, GpioPinDigitalOutput pin4){
+	public static boolean executeAvancer(GpioController gpio, GpioPinDigitalOutput pin5, GpioPinDigitalOutput pin4, State state){
 
 		boolean result = false;
 
 
 		try {
 
+			// provision gpio pin #05 vers le input 1 de L293D
+			pin5.low();
 
-			// provision gpio pin #01 vers le input 1 de L293D
-			pin1.low();
-
+			// permet d'eviter un accou trop brusque lorsque le moteur recul puis avance.
+			// temporise l effort
+			if(state.isReculer()){
+				Thread.sleep(1000);
+			}
+			
 			// provision gpio pin #04 vers le input 2 de L293D
 			pin4.high();
 
 			// cette conbinaison de du input 1 et input 2 fait tourner le moteur dans le sens des aiguilles d' une montre
 
 			result = true;
+			state.setAvancer(true);
+			state.setReculer(false);
+			
+			// vers le enable 1 de L293D
+			SoftPwm.softPwmWrite(RaspiPin.GPIO_01.getAddress(),DEFAULT_PUISSANCE);
+			
 
 		} catch (Throwable  e) {
 			result =  false;
@@ -43,14 +58,20 @@ public class Gpio {
 		return result;
 	}
 
-	public static boolean executeReculer(GpioController gpio, GpioPinDigitalOutput pin1, GpioPinDigitalOutput pin4){
+	public static boolean executeReculer(GpioController gpio, GpioPinDigitalOutput pin5, GpioPinDigitalOutput pin4, State state){
 
 		boolean result = false;
 
 		try {
 
-			// provision gpio pin #01 vers le input 1 de L293D
-			pin1.high();
+			// provision gpio pin #05 vers le input 1 de L293D
+			pin5.high();
+			
+			// permet d'eviter un accou trop brusque lorsque le moteur avance puis recule.
+			// temporise l effort
+			if(state.isAvancer()){
+				Thread.sleep(1000);
+			}
 
 			// provision gpio pin #04 vers le input 2 de L293D
 			pin4.low();
@@ -58,6 +79,11 @@ public class Gpio {
 			// cette conbinaison de du input 1 et input 2 fait tourner le moteur dans le sens  inversedes aiguilles d' une montre
 
 			result = true;
+			state.setAvancer(false);
+			state.setReculer(true);
+			
+			// vers le enable 1 de L293D
+			SoftPwm.softPwmWrite(RaspiPin.GPIO_01.getAddress(),DEFAULT_PUISSANCE);
 
 		} catch (Throwable  e) {
 			result =  false;
@@ -68,14 +94,13 @@ public class Gpio {
 	}
 
 
-	public static boolean executePuissance(GpioController gpio, long puissance, GpioPinDigitalOutput pin1){
+	public static boolean executePuissance(long puissance){
 
 		boolean result = false;
 
 		try {
 
-			// le pulse devrait moduler la vitesse du moteur
-			pin1.pulse(puissance, true); // set second argument to 'true' use a blocking call
+			SoftPwm.softPwmWrite(RaspiPin.GPIO_01.getAddress(),Long.valueOf(puissance).intValue());
 
 			result = true;
 
@@ -83,25 +108,25 @@ public class Gpio {
 			result =  false;
 		} 
 
-		
+
 		logger.info("executePuissance => " + String.valueOf(result));
 		return result;
 	}
 
-	public static boolean executeStop(GpioController gpio,GpioPinDigitalOutput pin1, GpioPinDigitalOutput pin4){
+	public static boolean executeStop(GpioController gpio,GpioPinDigitalOutput pin5, GpioPinDigitalOutput pin4, State state){
 
 		boolean result = false;
 
 		try {
 
 
-			pin1.low();
+			pin5.low();
 
 			pin4.low();
 
 			// configure the pin shutdown behavior; these settings will be 
 			// automatically applied to the pin when the application is terminated
-			pin1.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
+			pin5.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
 
 			// configure the pin shutdown behavior; these settings will be 
 			// automatically applied to the pin when the application is terminated

@@ -9,6 +9,7 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.wiringpi.SoftPwm;
 
 
 
@@ -18,26 +19,39 @@ public class RsPiWsImpl implements RsPiWs {
 	static Logger logger = Logger.getLogger(RsPiWsImpl.class);
 	
 	private GpioController gpio =  null;
-	private GpioPinDigitalOutput pin1 = null;
+
+	private GpioPinDigitalOutput pin5 = null;
 	private GpioPinDigitalOutput pin4 = null;
+	private State state;
 	
 	public RsPiWsImpl() {
 		// create gpio controller
 		this.gpio = GpioFactory.getInstance();
-		this.pin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW);
-		this.pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, PinState.LOW);		
+
+		this.gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.HIGH);
+		
+		this.pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, PinState.LOW);
+		this.pin5 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05,PinState.LOW);
+
+		com.pi4j.wiringpi.Gpio.wiringPiSetup();
+		// setup PWM for Motor A
+		// le pin #1 pour pi4j est en definitif le pin 18 visiblement le seul a pouvoir faire du pwm.
+		SoftPwm.softPwmCreate(RaspiPin.GPIO_01.getAddress(), 0, 100);
+
+		
+		this.state = new State();
 	}
 
 	@Override
 	public boolean avancer() {
 		logger.info("AVANCER");
-		return Gpio.executeAvancer(this.gpio, this.pin1, this.pin4);
+		return Gpio.executeAvancer(this.gpio, this.pin5, this.pin4, this.state);
 	}
 
 	@Override
 	public boolean reculer() {
 		logger.info("RECULER");
-		return Gpio.executeReculer(this.gpio, this.pin1, this.pin4);
+		return Gpio.executeReculer(this.gpio, this.pin5, this.pin4, this.state);
 	}
 
 	@Override
@@ -73,13 +87,13 @@ public class RsPiWsImpl implements RsPiWs {
 	@Override
 	public boolean puissance(long puissance) {
 		logger.info("PUISSANCE : P = "  + String.valueOf(puissance));
-		return Gpio.executePuissance(this.gpio,puissance, this.pin1);
+		return Gpio.executePuissance(puissance);
 	}
 
 	@Override
 	public boolean stop() {
 		logger.info("STOP");
-		return Gpio.executeStop(this.gpio, this.pin1, this.pin4);
+		return Gpio.executeStop(this.gpio, this.pin5, this.pin4, this.state);
 	}
 	
 
