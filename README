@@ -1,2 +1,19 @@
-Serveur de webservice. Execute des instructions sur les pins GPIO.
-Ici on veut faire tourner un moteur dans un sens puis dans l'autre.
+Serveur de webservice SAOP :
+---------------------------
+
+Le principe le principe est le suivant :
+L'application Android envoie des requetes SOAP au serveur.
+Pour chaque requete recu une ou plusieurs commandes sont effectuées sur les pins GPIO de la raspberry PI.
+
+Danc ce projet on veut faire tourner un moteur dans un sens puis dans l'autre. 
+On peut aussi moduler la vitesse de rotation du moteur.
+
+Pour faire marcher ce projet il faut donc :
+- Une raspberry pi équipée du wifi.
+- Une puce L293D.
+- Un moteur éléctrique DC.(J'utilise un moteur de légo 9V : http://www.robot-advance.com/ar-8883-moteur-m-power-functions-774.jpg)
+- Un téléphone Android.
+- Une borne wifi.
+- De vieux lego technique.
+
+Au final nous avons une petite voiture télécommandée qui avance recule s'arrete.
