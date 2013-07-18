@@ -2,7 +2,7 @@ Serveur de webservice SAOP :
 ---------------------------
 
 Le principe le principe est le suivant :
-L'application Android envoie des requetes SOAP au serveur.
+L'application Android (projet RspiController) envoie des requetes SOAP au serveur.
 Pour chaque requete recu une ou plusieurs commandes sont effectuées sur les pins GPIO de la raspberry PI.
 
 Danc ce projet on veut faire tourner un moteur dans un sens puis dans l'autre. 
