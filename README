@@ -17,3 +17,6 @@ Pour faire marcher ce projet il faut donc :
 - De vieux lego technique.
 
 Au final nous avons une petite voiture télécommandée qui avance recule s'arrete.
+
+Référence : 
+API : PI4J(lib java qui controle le GPIO) => http://pi4j.com/example/control.html
