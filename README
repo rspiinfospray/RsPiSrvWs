@@ -1,5 +1,5 @@
 Serveur de webservice SAOP embarqué sur un raspberry pi :
----------------------------
+--------------------------------------------------------
 
 Le principe le principe est le suivant :
 L'application Android (projet RspiController) envoie des requetes SOAP au serveur.
