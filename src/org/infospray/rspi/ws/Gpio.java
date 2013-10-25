@@ -20,6 +20,7 @@ public class Gpio {
 	static Logger logger = Logger.getLogger(Gpio.class);
 	
 	private static int DEFAULT_PUISSANCE = 50;
+	private static int MILLI_SECONDE_TOURNER = 100;
 
 	public static boolean executeAvancer(GpioController gpio, GpioPinDigitalOutput pin5, GpioPinDigitalOutput pin4, State state){
 
@@ -29,7 +30,7 @@ public class Gpio {
 		try {
 
 			// provision gpio pin #05 vers le input 1 de L293D
-			pin5.low();
+			pin4.low();
 
 			// permet d'eviter un accou trop brusque lorsque le moteur recul puis avance.
 			// temporise l effort
@@ -38,7 +39,7 @@ public class Gpio {
 			}
 			
 			// provision gpio pin #04 vers le input 2 de L293D
-			pin4.high();
+			pin5.high();
 
 			// cette conbinaison de du input 1 et input 2 fait tourner le moteur dans le sens des aiguilles d' une montre
 
@@ -65,7 +66,7 @@ public class Gpio {
 		try {
 
 			// provision gpio pin #05 vers le input 1 de L293D
-			pin5.high();
+			pin4.high();
 			
 			// permet d'eviter un accou trop brusque lorsque le moteur avance puis recule.
 			// temporise l effort
@@ -74,7 +75,7 @@ public class Gpio {
 			}
 
 			// provision gpio pin #04 vers le input 2 de L293D
-			pin4.low();
+			pin5.low();
 
 			// cette conbinaison de du input 1 et input 2 fait tourner le moteur dans le sens  inversedes aiguilles d' une montre
 
@@ -147,6 +148,48 @@ public class Gpio {
 		}
 
 		logger.info("executeStop => " + String.valueOf(result));
+		return result;
+	}
+	
+	
+	/** 
+	 * code identique que pour droite laisser pour futur evol 
+	 * on veut juste une impulsion pour tourner les roues on ne veut pas laisser tounrer le moteur
+	 * @param pin
+	 * @return
+	 */
+	public static boolean executeGauche( GpioPinDigitalOutput pin){
+		boolean result = false;
+
+
+		try {
+
+			pin.pulse(MILLI_SECONDE_TOURNER, true);
+			
+
+		} catch (Throwable  e) {
+			result =  false;
+		} 
+
+		logger.info("executeGauche => " + String.valueOf(result));
+		return result;
+	}
+	
+	
+	public static boolean executeDroite(GpioPinDigitalOutput pin){
+		boolean result = false;
+
+
+		try {
+
+			pin.pulse(MILLI_SECONDE_TOURNER, true);
+			
+
+		} catch (Throwable  e) {
+			result =  false;
+		} 
+
+		logger.info("executeDroite => " + String.valueOf(result));
 		return result;
 	}
 

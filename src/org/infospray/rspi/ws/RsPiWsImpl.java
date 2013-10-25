@@ -20,8 +20,14 @@ public class RsPiWsImpl implements RsPiWs {
 	
 	private GpioController gpio =  null;
 
+	// puissance
 	private GpioPinDigitalOutput pin5 = null;
 	private GpioPinDigitalOutput pin4 = null;
+	
+	// direction
+	private GpioPinDigitalOutput pin0 = null;
+	private GpioPinDigitalOutput pin2 = null;
+	
 	private State state;
 	
 	public RsPiWsImpl() {
@@ -30,8 +36,13 @@ public class RsPiWsImpl implements RsPiWs {
 
 		this.gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.HIGH);
 		
+		//pour la puissance
 		this.pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, PinState.LOW);
 		this.pin5 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05,PinState.LOW);
+		
+		// pour la direction
+		this.pin0 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW);
+		this.pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02,PinState.LOW);
 
 		com.pi4j.wiringpi.Gpio.wiringPiSetup();
 		// setup PWM for Motor A
@@ -57,13 +68,13 @@ public class RsPiWsImpl implements RsPiWs {
 	@Override
 	public boolean tournerGauche(long angle) {
 		logger.info("TOURNER_GAUCHE : D = "  + String.valueOf(angle));
-		return false;
+		return Gpio.executeGauche(this.pin2);
 	}
 
 	@Override
 	public boolean tournerDroite(long angle) {
 		logger.info("TOURNER_DROITE : D = " + String.valueOf(angle));
-		return false;
+		return Gpio.executeDroite(this.pin0);
 	}
 
 	@Override
