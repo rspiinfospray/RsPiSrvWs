@@ -10,7 +10,7 @@ On peut aussi moduler la vitesse de rotation du moteur.
 
 Pour faire marcher ce projet il faut donc :
 - Une raspberry pi équipée du wifi.
-- Une puce L293D.
+- Une puce L293D.(http://www.wvshare.com/datasheet/ST_PDF/L293D.PDF)
 - Un moteur éléctrique DC.(J'utilise un moteur de légo 9V : http://www.robot-advance.com/ar-8883-moteur-m-power-functions-774.jpg)
 - Un téléphone Android.
 - Une borne wifi.
