@@ -7,6 +7,10 @@ public class State {
 	private boolean reculer;
 	
 	private boolean stop;
+	
+	private boolean droite;
+	
+	private boolean gauche;
 
 	public boolean isAvancer() {
 		return avancer;
@@ -30,6 +34,22 @@ public class State {
 
 	public void setStop(boolean stop) {
 		this.stop = stop;
+	}
+
+	public boolean isDroite() {
+		return droite;
+	}
+
+	public void setDroite(boolean droite) {
+		this.droite = droite;
+	}
+
+	public boolean isGauche() {
+		return gauche;
+	}
+
+	public void setGauche(boolean gauche) {
+		this.gauche = gauche;
 	}
 	
 	

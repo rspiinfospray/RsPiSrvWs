@@ -67,20 +67,20 @@ public class RsPiWsImpl implements RsPiWs {
 
 	@Override
 	public boolean tournerGauche(long angle) {
-		logger.info("TOURNER_GAUCHE : D = "  + String.valueOf(angle));
-		return Gpio.executeGauche(this.pin2);
+		logger.info("TOURNER_GAUCHE");
+		return Gpio.executeGauche(this.pin2,this.state);
 	}
 
 	@Override
 	public boolean tournerDroite(long angle) {
-		logger.info("TOURNER_DROITE : D = " + String.valueOf(angle));
-		return Gpio.executeDroite(this.pin0);
+		logger.info("TOURNER_DROIT");
+		return Gpio.executeDroite(this.pin0, this.state);
 	}
 
 	@Override
 	public boolean alignerRoueMilieu() {
 		logger.info("ALIGNER_ROUES_MILIEU");
-		return false;
+		return Gpio.executeAlignerRoue(this.pin2,this.pin0,this.state);
 	}
 
 	@Override

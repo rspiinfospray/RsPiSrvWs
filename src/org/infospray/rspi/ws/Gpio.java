@@ -41,14 +41,14 @@ public class Gpio {
 			// provision gpio pin #04 vers le input 2 de L293D
 			pin5.high();
 
-			// cette conbinaison de du input 1 et input 2 fait tourner le moteur dans le sens des aiguilles d' une montre
-
-			result = true;
+			// cette conbinaison de du input 1 et input 2 fait tourner le moteur dans le sens des aiguilles d' une montre			
 			state.setAvancer(true);
 			state.setReculer(false);
 			
 			// vers le enable 1 de L293D
 			SoftPwm.softPwmWrite(RaspiPin.GPIO_01.getAddress(),DEFAULT_PUISSANCE);
+			
+			result = true;
 			
 
 		} catch (Throwable  e) {
@@ -158,14 +158,19 @@ public class Gpio {
 	 * @param pin
 	 * @return
 	 */
-	public static boolean executeGauche( GpioPinDigitalOutput pin){
+	public static boolean executeGauche( GpioPinDigitalOutput pin, State state){
 		boolean result = false;
 
 
 		try {
 
-			pin.pulse(MILLI_SECONDE_TOURNER, true);
-			
+			if(!state.isGauche()){
+				pin.pulse(MILLI_SECONDE_TOURNER, true);
+				state.setGauche(true);
+				state.setDroite(false);
+			}
+
+			result = true;
 
 		} catch (Throwable  e) {
 			result =  false;
@@ -174,22 +179,63 @@ public class Gpio {
 		logger.info("executeGauche => " + String.valueOf(result));
 		return result;
 	}
+
 	
-	
-	public static boolean executeDroite(GpioPinDigitalOutput pin){
+	public static boolean executeDroite(GpioPinDigitalOutput pin, State state){
 		boolean result = false;
 
 
 		try {
 
-			pin.pulse(MILLI_SECONDE_TOURNER, true);
+			if(!state.isDroite()){
+				pin.pulse(MILLI_SECONDE_TOURNER, true);
+				state.setDroite(true);
+				state.setGauche(false);
+			}
 			
+			result = true;
 
 		} catch (Throwable  e) {
 			result =  false;
 		} 
 
 		logger.info("executeDroite => " + String.valueOf(result));
+		return result;
+	}
+
+	/**
+	 * on set la moitie de la valeur de TOURNER
+	 * @param pin2Gauche
+	 * @param pin0Droite
+	 * @param state
+	 * @return
+	 */
+	public static boolean executeAlignerRoue(GpioPinDigitalOutput pin2Gauche, GpioPinDigitalOutput pin0Droite, State state) {
+		boolean result = false;
+
+		if(state.isGauche() || state.isDroite()){
+
+			try {
+
+				if(state.isDroite()){
+					pin2Gauche.pulse(MILLI_SECONDE_TOURNER / 2, true);
+					state.setDroite(false);
+				}
+				if(state.isGauche()){
+					pin0Droite.pulse(MILLI_SECONDE_TOURNER / 2, true);
+					state.setGauche(false);
+				}
+
+				result = true;
+
+			} catch (Throwable  e) {
+				result =  false;
+			} 
+
+		}else{
+			result = true;
+		}
+
 		return result;
 	}
 
